@@ -3,7 +3,7 @@ name = "statiegeld"
 version = "0.1.0"
 description = "Deposit refund scanner and tracker for Raspberry Pi"
 readme = "README.md"
-requires-python = "==3.13"
+requires-python = ">=3.13,<3.14"
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
