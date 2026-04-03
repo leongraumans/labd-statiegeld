@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Products</h1>
+
+<form method="post" action="/products" class="product-form">
+    <input type="text" name="barcode" placeholder="Barcode" required>
+    <input type="text" name="name" placeholder="Product name" required>
+    <select name="type" required>
+        <option value="can">Can</option>
+        <option value="bottle">Bottle</option>
+        <option value="unknown">Unknown</option>
+    </select>
+    <button type="submit">Add product</button>
+</form>
+
+
+<h2>Known products <span class="count">{{ products|length }}</span></h2>
+
+{% if products %}
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Barcode</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th style="text-align:right">Deposit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td class="mono">{{ p.barcode }}</td>
+                <td>{{ p.name }}</td>
+                <td>
+                    {% if p.type.value == 'can' %}
+                    <span class="badge badge-can">Can</span>
+                    {% elif p.type.value == 'bottle' %}
+                    <span class="badge badge-bottle">Bottle</span>
+                    {% else %}
+                    <span class="badge badge-unknown">Unknown</span>
+                    {% endif %}
+                </td>
+                <td class="mono" style="text-align:right">&euro;{{ "%.2f"|format(p.deposit) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty">
+    <div class="empty-icon">~</div>
+    <p>No products yet.</p>
+</div>
+{% endif %}
+{% endblock %}

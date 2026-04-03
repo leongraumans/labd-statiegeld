@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>History</h1>
+
+{% if sessions %}
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Cans</th>
+                <th>Bottles</th>
+                <th style="text-align:right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr>
+                <td>{{ s.session.closed_at | nl_datetime }}</td>
+                <td class="mono">{{ s.cans }}</td>
+                <td class="mono">{{ s.bottles }}</td>
+                <td class="mono" style="text-align:right">&euro;{{ "%.2f"|format(s.total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty">
+    <div class="empty-icon">~</div>
+    <p>No closed sessions yet.</p>
+</div>
+{% endif %}
+{% endblock %}

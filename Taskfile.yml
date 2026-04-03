@@ -1,0 +1,41 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install all dependencies
+    cmds:
+      - uv sync
+
+  dev:
+    desc: Start the development server
+    cmds:
+      - uv run python main.py
+
+  scan:
+    desc: Add a scan manually (e.g. task scan -- --barcode 5449000000996)
+    cmds:
+      - uv run python -m statiegeld.fake_scanner --count 1 {{.CLI_ARGS}}
+
+  fake-scan:
+    desc: Simulate multiple barcode scans (e.g. task fake-scan -- --count 10)
+    cmds:
+      - uv run python -m statiegeld.fake_scanner {{.CLI_ARGS}}
+
+  seed:
+    desc: Seed the database with known products
+    cmds:
+      - uv run python -m statiegeld.seed
+
+  reset:
+    desc: Delete the database and start fresh
+    cmds:
+      - rm -f statiegeld.db
+
+  install-services:
+    desc: Install systemd services on Raspberry Pi
+    cmds:
+      - sudo cp systemd/statiegeld-web.service /etc/systemd/system/
+      - sudo cp systemd/statiegeld-scanner.service /etc/systemd/system/
+      - sudo systemctl daemon-reload
+      - sudo systemctl enable statiegeld-web statiegeld-scanner
+      - sudo systemctl start statiegeld-web statiegeld-scanner

@@ -1,0 +1,16 @@
+[Unit]
+Description=Statiegeld barcode scanner
+After=statiegeld-web.service
+Requires=statiegeld-web.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/pi/statiegeld
+Environment=API_KEY=statiegeld-scanner
+ExecStart=/home/pi/statiegeld/.venv/bin/python -m statiegeld.scanner --device /dev/input/event0
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

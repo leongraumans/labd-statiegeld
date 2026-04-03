@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Lab Digital Statiegeld</h1>
+<p class="subtitle">{{ now.strftime("%A") | replace("Monday", "maandag") | replace("Tuesday", "dinsdag") | replace("Wednesday", "woensdag") | replace("Thursday", "donderdag") | replace("Friday", "vrijdag") | replace("Saturday", "zaterdag") | replace("Sunday", "zondag") }} {{ now | nl_datetime }}</p>
+
+<div class="stats">
+    <div class="stat-card">
+        <div class="stat-label">Blikjes</div>
+        <div class="stat-value">{{ cans }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Flesjes</div>
+        <div class="stat-value">{{ bottles }}</div>
+    </div>
+    <div class="stat-card accent">
+        <div class="stat-label">Totaal</div>
+        <div class="stat-value">&euro;{{ "%.2f"|format(total) }}</div>
+    </div>
+</div>
+
+<div class="overview">
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Aantal</th>
+                <th>Per stuk</th>
+                <th style="text-align:right">Subtotaal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge badge-can">Blikjes</span></td>
+                <td class="mono">{{ cans }}</td>
+                <td class="mono">&euro;0,15</td>
+                <td class="mono" style="text-align:right">&euro;{{ "%.2f"|format(total_cans) }}</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-bottle">Flesjes</span></td>
+                <td class="mono">{{ bottles }}</td>
+                <td class="mono">&euro;0,25</td>
+                <td class="mono" style="text-align:right">&euro;{{ "%.2f"|format(total_bottles) }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Totaal</td>
+                <td class="mono" style="text-align:right">&euro;{{ "%.2f"|format(total) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="actions no-print">
+    <button onclick="window.print()" class="btn btn-primary">Printen</button>
+    <button onclick="document.getElementById('confirm-modal').classList.add('is-open')" class="btn btn-danger">
+        Sessie afsluiten
+    </button>
+</div>
+
+<div class="modal-overlay" id="confirm-modal">
+    <div class="modal">
+        <h2 class="modal-title">Sessie afsluiten?</h2>
+        <p class="modal-text">De huidige sessie wordt afgesloten en een nieuwe wordt gestart. Dit kan niet ongedaan worden.</p>
+        <div class="modal-actions">
+            <button onclick="document.getElementById('confirm-modal').classList.remove('is-open')" class="btn btn-secondary">Annuleren</button>
+            <form method="post" action="/session/close" style="display:inline">
+                <button type="submit" class="btn btn-danger">Afsluiten</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+[project]
+name = "statiegeld"
+version = "0.1.0"
+description = "Deposit refund scanner and tracker for Raspberry Pi"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "jinja2",
+    "sqlalchemy",
+    "python-multipart",
+    "httpx",
+    "sqladmin",
+    "itsdangerous",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/statiegeld"]

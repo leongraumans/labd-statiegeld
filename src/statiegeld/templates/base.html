@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab Digital Statiegeld</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/"
+        ><img src="/static/logo.svg" alt="Lab Digital" class="logo"
+      /></a>
+      <nav>
+        <a
+          href="/session"
+          class="{% if request.url.path == '/session' %}active{% endif %}"
+          >Overzicht</a
+        >
+        <a
+          href="/history"
+          class="{% if request.url.path == '/history' %}active{% endif %}"
+          >Geschiedenis</a
+        >
+        <a
+          href="/products"
+          class="{% if request.url.path == '/products' %}active{% endif %}"
+        >
+          Producten {% if unknown_count > 0 %}<span class="nav-badge"
+            >{{ unknown_count }}</span
+          >{% endif %}
+        </a>
+      </nav>
+    </header>
+    {% if unknown_count > 0 %}
+    <div class="alert-bar">
+      <span
+        >{{ unknown_count }} product{{ "en" if unknown_count > 1 else "" }} met
+        onbekend type</span
+      >
+      {% if unknown_count == 1 %}
+      <a href="/admin/product/edit/{{ unknown_products[0].id }}" class="alert-action">Type aanpassen</a>
+      {% else %}
+      <a href="/admin/product/list?search=Unknown" class="alert-action">Bekijken</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    <main>{% block content %}{% endblock %}</main>
+  </body>
+</html>
