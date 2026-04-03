@@ -53,24 +53,6 @@ task dev        # Start dev server at http://localhost:8000
 The scan API requires an `X-Api-Key` header. Change defaults via environment variables
 on the Pi.
 
-## Project structure
-
-```
-src/statiegeld/
-  main.py           # FastAPI app, routes, admin
-  models.py         # Product, Session, Scan + ProductType enum
-  database.py       # SQLite engine
-  config.py         # Environment variable config
-  auth.py           # Admin authentication
-  seed.py           # Example product data
-  openfoodfacts.py  # Product lookup API client
-  scanner.py        # USB barcode scanner service
-  fake_scanner.py   # Test script to simulate scans
-  templates/        # Jinja2 HTML templates
-  static/           # CSS + logo
-systemd/            # Service files for Raspberry Pi
-```
-
 ## Raspberry Pi deployment
 
 See [INSTALL.md](INSTALL.md) for full setup instructions.
