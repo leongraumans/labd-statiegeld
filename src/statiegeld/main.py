@@ -107,7 +107,6 @@ class SessionAdmin(ModelView, model=ScanSession):
         ScanSession.closed_at,
         ScanSession.is_active,
     ]
-    column_filters = [ScanSession.is_active]
     column_default_sort = ("id", True)
     page_size = 50
     icon = "fa-solid fa-database"
@@ -129,11 +128,16 @@ class HomeLink(BaseView):
         return RedirectResponse(url="/")
 
 
-admin = Admin(app, engine, authentication_backend=AdminAuth(SECRET_KEY))
-admin.add_base_view(HomeLink)
+admin = Admin(
+    app,
+    engine,
+    authentication_backend=AdminAuth(SECRET_KEY),
+    templates_dir=str(BASE_DIR / "templates"),
+)
 admin.add_view(ProductAdmin)
 admin.add_view(SessionAdmin)
 admin.add_view(ScanAdmin)
+admin.add_base_view(HomeLink)
 
 
 def find_or_lookup_product(barcode: str, db: Session) -> Product:

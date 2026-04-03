@@ -75,6 +75,13 @@ nav a.active {
     font-weight: 600;
 }
 
+/* Nav admin link */
+.nav-admin {
+    border-left: 1px solid var(--dark-border);
+    margin-left: 4px;
+    padding-left: 8px;
+}
+
 /* Nav badge */
 .nav-badge {
     display: inline-flex;

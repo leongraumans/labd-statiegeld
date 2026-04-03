@@ -9,7 +9,7 @@ tasks:
   dev:
     desc: Start the development server
     cmds:
-      - uv run python main.py
+      - uv run python run.py
 
   scan:
     desc: Add a scan manually (e.g. task scan -- --barcode 5449000000996)
