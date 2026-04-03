@@ -74,17 +74,27 @@ This will show something like:
 
 Note the `/dev/input/eventX` path for your scanner.
 
-### 6. Update the scanner service
+### 6. Update the service files
 
-Edit `systemd/statiegeld-scanner.service` and set the correct device path:
+Edit both `systemd/statiegeld-web.service` and `systemd/statiegeld-scanner.service` before copying them. Update the following fields to match your setup:
 
-```
-ExecStart=/home/pi/statiegeld/.venv/bin/python -m statiegeld.scanner --device /dev/input/event0
-```
+- `User` — your Pi username (e.g. `pi`)
+- `WorkingDirectory` — the full path to the cloned repo (e.g. `/home/pi/Projects/labd-statiegeld`)
+- `ExecStart` — must point to the `.venv/bin/` inside that same directory
+- `--device` (scanner only) — the correct device path for your barcode scanner
 
-Also update `User` and `WorkingDirectory` if your username is not `pi`.
+Use `uv run python -m statiegeld.scanner --list` to find the correct device path.
 
 ### 7. Install and start services
+
+First, install task:
+
+```bash
+curl -1sLf 'https://dl.cloudsmith.io/public/task/task/setup.deb.sh' | sudo -E bash
+sudo apt install task
+```
+
+Then:
 
 ```bash
 task install-services
