@@ -1,6 +1,9 @@
 # Statiegeld Tracker
 
-Deposit refund tracker for Lab Digital. Scans cans and bottles via a USB barcode scanner on a Raspberry Pi, keeps count, and provides a printable overview each month.
+Deposit refund tracker for Lab Digital. Scans cans and bottles via a USB barcode scanner
+on a Raspberry Pi, keeps count, and provides a printable overview each month.
+
+![Statiegeld Tracker](src/statiegeld/static/image.png)
 
 ## Stack
 
@@ -19,33 +22,36 @@ task dev        # Start dev server at http://localhost:8000
 
 ## Commands
 
-| Command | Description |
-|---|---|
-| `task install` | Install dependencies |
-| `task dev` | Start development server |
-| `task scan -- --barcode <ean>` | Add a single scan |
-| `task fake-scan -- --count 10` | Simulate random scans |
-| `task seed` | Seed database with known products |
-| `task reset` | Delete the database |
-| `task install-services` | Install systemd services on Pi |
+| Command                        | Description                       |
+| ------------------------------ | --------------------------------- |
+| `task install`                 | Install dependencies              |
+| `task dev`                     | Start development server          |
+| `task scan -- --barcode <ean>` | Add a single scan                 |
+| `task fake-scan -- --count 10` | Simulate random scans             |
+| `task seed`                    | Seed database with known products |
+| `task reset`                   | Delete the database               |
+| `task install-services`        | Install systemd services on Pi    |
 
 ## How it works
 
-1. **Barcode scanner** (`scanner.py`) runs as a background service, reads the USB device, and POSTs each barcode to the API
+1. **Barcode scanner** (`scanner.py`) runs as a background service, reads the USB
+   device, and POSTs each barcode to the API
 2. **Product lookup**: local DB first, then Open Food Facts, then saved as UNKNOWN
 3. **Web UI**: overview page with totals, printable for monthly Albert Heijn pickup
-4. **Admin** (`/admin`): manage products, sessions, and scans. Fix UNKNOWN product types here
+4. **Admin** (`/admin`): manage products, sessions, and scans. Fix UNKNOWN product types
+   here
 
 ## Security
 
-| Variable | Default | Description |
-|---|---|---|
-| `ADMIN_USERNAME` | `admin` | Admin panel login |
-| `ADMIN_PASSWORD` | `statiegeld` | Admin panel password |
-| `API_KEY` | `statiegeld-scanner` | Required header for scan API |
-| `SECRET_KEY` | random | Session cookie signing |
+| Variable         | Default              | Description                  |
+| ---------------- | -------------------- | ---------------------------- |
+| `ADMIN_USERNAME` | `admin`              | Admin panel login            |
+| `ADMIN_PASSWORD` | `statiegeld`         | Admin panel password         |
+| `API_KEY`        | `statiegeld-scanner` | Required header for scan API |
+| `SECRET_KEY`     | random               | Session cookie signing       |
 
-The scan API requires an `X-Api-Key` header. Change defaults via environment variables on the Pi.
+The scan API requires an `X-Api-Key` header. Change defaults via environment variables
+on the Pi.
 
 ## Project structure
 
