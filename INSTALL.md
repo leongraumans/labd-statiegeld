@@ -4,7 +4,7 @@
 
 - Raspberry Pi (3/4/5) with Raspberry Pi OS
 - USB barcode scanner
-- Python 3.14+
+- Python 3.13
 - [uv](https://docs.astral.sh/uv/) package manager
 - [Task](https://taskfile.dev/) task runner (optional, but recommended)
 
