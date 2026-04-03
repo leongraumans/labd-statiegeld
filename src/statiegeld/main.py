@@ -79,9 +79,9 @@ def get_unknown_products(db: Session) -> list[Product]:
 def render(request: Request, template: str, db: Session, context: dict = {}):
     unknown_products = get_unknown_products(db)
     return templates.TemplateResponse(
-        request,
         template,
         {
+            "request": request,
             **context,
             "unknown_count": len(unknown_products),
             "unknown_products": unknown_products,

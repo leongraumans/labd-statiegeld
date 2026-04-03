@@ -5,7 +5,8 @@ description = "Deposit refund scanner and tracker for Raspberry Pi"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "fastapi",
+    "fastapi>=0.95,<0.100",
+    "pydantic>=1.10,<2",
     "uvicorn",
     "jinja2",
     "sqlalchemy",
