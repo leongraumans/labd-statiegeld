@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+from time import monotonic
 
 from fastapi import Depends, FastAPI, Form, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -70,12 +71,27 @@ def nl_datetime(dt: datetime) -> str:
 templates.env.filters["nl_datetime"] = nl_datetime
 
 
+_unknown_cache: dict = {"products": [], "expires": 0.0}
+_UNKNOWN_CACHE_TTL = 30  # seconds
+
+
+def invalidate_unknown_cache():
+    """Force the next get_unknown_products() call to hit the database."""
+    _unknown_cache["expires"] = 0.0
+
+
 def get_unknown_products(db: Session) -> list[Product]:
-    return (
+    now = monotonic()
+    if now < _unknown_cache["expires"]:
+        return _unknown_cache["products"]
+    products = (
         db.execute(select(Product).where(Product.type == ProductType.UNKNOWN))
         .scalars()
         .all()
     )
+    _unknown_cache["products"] = products
+    _unknown_cache["expires"] = now + _UNKNOWN_CACHE_TTL
+    return products
 
 
 def render(request: Request, template: str, db: Session, context: dict = {}):
@@ -161,6 +177,7 @@ def find_or_lookup_product(barcode: str, db: Session) -> Product:
     db.add(product)
     db.commit()
     db.refresh(product)
+    invalidate_unknown_cache()
     return product
 
 
@@ -273,6 +290,7 @@ async def add_product(
     if not exists:
         db.add(Product(barcode=barcode, name=name, type=ProductType(type)))
         db.commit()
+        invalidate_unknown_cache()
     return RedirectResponse(url="/products", status_code=303)
 
 
