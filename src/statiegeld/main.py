@@ -37,6 +37,16 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
+
+@app.middleware("http")
+async def static_cache_headers(request: Request, call_next):
+    """Add Cache-Control headers to static file responses."""
+    response = await call_next(request)
+    if request.url.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
+
+
 TZ = ZoneInfo("Europe/Amsterdam")
 
 
