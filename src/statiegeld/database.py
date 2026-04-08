@@ -15,11 +15,13 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 def _set_sqlite_pragmas(dbapi_conn, connection_record):
     """Tune SQLite for performance on Raspberry Pi (SD card I/O)."""
     cursor = dbapi_conn.cursor()
+    cursor.execute(
+        "PRAGMA busy_timeout=5000"
+    )  # 5 sec wait on lock (set first to avoid lock errors)
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute("PRAGMA synchronous=NORMAL")
     cursor.execute("PRAGMA cache_size=-8000")  # 8 MB page cache
-    cursor.execute("PRAGMA busy_timeout=5000")  # 5 sec wait on lock
     cursor.execute("PRAGMA temp_store=MEMORY")
     cursor.close()
 

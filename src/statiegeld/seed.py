@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from statiegeld.database import SessionLocal, init_db
 from statiegeld.models import Product, ProductType
@@ -39,8 +40,12 @@ def seed():
                 select(Product).where(Product.barcode == barcode)
             ).scalar_one_or_none()
             if not exists:
-                db.add(Product(barcode=barcode, name=name, type=product_type))
-                added += 1
+                try:
+                    db.add(Product(barcode=barcode, name=name, type=product_type))
+                    db.flush()
+                    added += 1
+                except IntegrityError:
+                    db.rollback()
         db.commit()
         print(f"{added} products added ({len(KNOWN_PRODUCTS) - added} already existed)")
     finally:

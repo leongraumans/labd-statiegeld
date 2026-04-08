@@ -10,7 +10,7 @@ Environment=ADMIN_USERNAME=admin
 Environment=ADMIN_PASSWORD=changeme
 Environment=API_KEY=statiegeld-scanner
 Environment=SECRET_KEY=changeme-to-a-random-string
-ExecStart=/home/pi/statiegeld/.venv/bin/uvicorn statiegeld.main:app --host 0.0.0.0 --port 8000
+ExecStart=/home/pi/statiegeld/.venv/bin/uvicorn statiegeld.main:app --host 0.0.0.0 --port 8000 --workers 2
 Restart=always
 RestartSec=5
 
