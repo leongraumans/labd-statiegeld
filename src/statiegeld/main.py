@@ -7,11 +7,11 @@ from fastapi import Depends, FastAPI, Form, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel
 from sqladmin import Admin, BaseView, ModelView, expose
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from starlette.middleware.gzip import GZipMiddleware
 from zoneinfo import ZoneInfo
 
 from statiegeld.auth import AdminAuth
@@ -193,7 +193,7 @@ def find_or_lookup_product(barcode: str, db: Session) -> Product:
 
 def get_or_create_active_session(db: Session) -> ScanSession:
     session = db.execute(
-        select(ScanSession).where(ScanSession.is_active == True)
+        select(ScanSession).where(ScanSession.is_active)
     ).scalar_one_or_none()
     if not session:
         session = ScanSession()
@@ -260,7 +260,7 @@ async def history_page(request: Request, db: Session = Depends(get_db)):
     sessions = (
         db.execute(
             select(ScanSession)
-            .where(ScanSession.is_active == False)
+            .where(not ScanSession.is_active)
             .order_by(ScanSession.closed_at.desc())
         )
         .scalars()

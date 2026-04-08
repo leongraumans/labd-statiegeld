@@ -31,6 +31,12 @@ tasks:
     cmds:
       - rm -f statiegeld.db
 
+  format:
+    desc: Format codebase with ruff
+    cmds:
+      - uv run ruff format .
+      - uv run ruff check --fix .
+
   install-services:
     desc: Install systemd services on Raspberry Pi
     cmds:

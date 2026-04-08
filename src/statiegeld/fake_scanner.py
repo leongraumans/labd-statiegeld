@@ -16,8 +16,15 @@ DEFAULT_API_KEY = os.environ.get("API_KEY", "statiegeld-scanner")
 def main():
     parser = argparse.ArgumentParser(description="Simulate barcode scans")
     parser.add_argument("--barcode", help="Specific barcode to scan")
-    parser.add_argument("--count", type=int, default=5, help="Number of scans (default: 5)")
-    parser.add_argument("--interval", type=float, default=1.0, help="Seconds between scans (default: 1.0)")
+    parser.add_argument(
+        "--count", type=int, default=5, help="Number of scans (default: 5)"
+    )
+    parser.add_argument(
+        "--interval",
+        type=float,
+        default=1.0,
+        help="Seconds between scans (default: 1.0)",
+    )
     parser.add_argument("--url", default=DEFAULT_URL, help="API URL")
     parser.add_argument("--api-key", default=DEFAULT_API_KEY, help="API key")
     args = parser.parse_args()
@@ -32,9 +39,13 @@ def main():
         data = response.json()
 
         if data.get("status") == "ok":
-            print(f"  [{i+1}/{args.count}] {barcode} -> {data['product']} (+€{data['deposit']:.2f})")
+            print(
+                f"  [{i + 1}/{args.count}] {barcode} -> {data['product']} (+€{data['deposit']:.2f})"
+            )
         else:
-            print(f"  [{i+1}/{args.count}] {barcode} -> {data.get('detail', data.get('message', 'Error'))}")
+            print(
+                f"  [{i + 1}/{args.count}] {barcode} -> {data.get('detail', data.get('message', 'Error'))}"
+            )
 
         if i < args.count - 1:
             time.sleep(args.interval)

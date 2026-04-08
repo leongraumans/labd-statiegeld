@@ -51,7 +51,9 @@ class Scan(Base):
 
     id = Column(Integer, primary_key=True)
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False)
+    product_id = Column(
+        Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=False
+    )
     scanned_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     session = relationship("Session", back_populates="scans")

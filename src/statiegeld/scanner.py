@@ -22,8 +22,16 @@ DEFAULT_API_KEY = os.environ.get("API_KEY", "statiegeld-scanner")
 
 # evdev key code to character mapping (digits + Enter)
 KEY_MAP = {
-    2: "1", 3: "2", 4: "3", 5: "4", 6: "5",
-    7: "6", 8: "7", 9: "8", 10: "9", 11: "0",
+    2: "1",
+    3: "2",
+    4: "3",
+    5: "4",
+    6: "5",
+    7: "6",
+    8: "7",
+    9: "8",
+    10: "9",
+    11: "0",
 }
 KEY_ENTER = 28
 
@@ -40,7 +48,7 @@ def list_devices():
 
 
 def scan_loop(device_path: str, api_url: str, api_key: str):
-    from evdev import InputDevice, categorize, ecodes
+    from evdev import InputDevice, ecodes
 
     device = InputDevice(device_path)
     device.grab()  # exclusive access, prevents ghost keyboard input
@@ -56,7 +64,9 @@ def scan_loop(device_path: str, api_url: str, api_key: str):
 
             key = event.code
             if key == KEY_ENTER and barcode:
-                response = httpx.post(api_url, json={"barcode": barcode}, headers=headers)
+                response = httpx.post(
+                    api_url, json={"barcode": barcode}, headers=headers
+                )
                 data = response.json()
                 if data["status"] == "ok":
                     print(f"  {barcode} -> {data['product']} (+€{data['deposit']:.2f})")
@@ -74,7 +84,9 @@ def scan_loop(device_path: str, api_url: str, api_key: str):
 def main():
     parser = argparse.ArgumentParser(description="USB barcode scanner service")
     parser.add_argument("--device", help="Input device path (e.g. /dev/input/event0)")
-    parser.add_argument("--list", action="store_true", help="List available input devices")
+    parser.add_argument(
+        "--list", action="store_true", help="List available input devices"
+    )
     parser.add_argument("--url", default=DEFAULT_URL, help="API URL")
     parser.add_argument("--api-key", default=DEFAULT_API_KEY, help="API key")
     args = parser.parse_args()
