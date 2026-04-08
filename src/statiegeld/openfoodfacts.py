@@ -7,14 +7,29 @@ from statiegeld.models import ProductType
 API_URL = "https://world.openfoodfacts.org/api/v2/product/{barcode}.json"
 FIELDS = "product_name,packaging_tags,packaging_text,quantity"
 
+# Reuse a single httpx.Client for connection pooling and HTTP keep-alive,
+# avoiding TCP/TLS handshake overhead on every lookup.
+_client = httpx.Client(
+    timeout=5.0,
+    headers={"User-Agent": "StatiegeldTracker/1.0"},
+)
+
 CAN_TAGS = {"en:can", "en:drink-can", "en:aluminum-can", "en:metal-can"}
-BOTTLE_TAGS = {"en:bottle", "en:pet-bottle", "en:plastic-bottle", "en:glass-bottle", "en:bouteille"}
+BOTTLE_TAGS = {
+    "en:bottle",
+    "en:pet-bottle",
+    "en:plastic-bottle",
+    "en:glass-bottle",
+    "en:bouteille",
+}
 
 CAN_KEYWORDS = {"can", "blik", "canette", "dose", "tin"}
 BOTTLE_KEYWORDS = {"bottle", "fles", "bouteille", "flasche", "pet"}
 
 
-def _classify(packaging_tags: list[str], packaging_text: str, quantity: str) -> ProductType:
+def _classify(
+    packaging_tags: list[str], packaging_text: str, quantity: str
+) -> ProductType:
     tags = {t.lower() for t in packaging_tags}
 
     if tags & CAN_TAGS:
@@ -37,11 +52,9 @@ def lookup(barcode: str) -> dict | None:
     """Look up a barcode via Open Food Facts.
     Returns {"name": ..., "type": ProductType} or None if not found at all."""
     try:
-        response = httpx.get(
+        response = _client.get(
             API_URL.format(barcode=barcode),
             params={"fields": FIELDS},
-            timeout=5.0,
-            headers={"User-Agent": "StatiegeldTracker/1.0"},
         )
         data = response.json()
 
